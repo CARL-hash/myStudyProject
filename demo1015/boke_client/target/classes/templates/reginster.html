@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/css3.css}">
+    <script type="text/javascript" th:src="@{/static/js/jquery-1.8.3.js}"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            // 验证密码1
+            $("#pwd1").blur(function () {
+                // 获取确认密码框中的密码
+                var pwd2 = $("#pwd2").val();
+                // 判断是否存有值
+                if(pwd2.length != 0 ){
+                    var pwd1 = $(this).val();
+                    // 判断密码是否不一致
+                    if(pwd2 != pwd1){
+                        $("#pwd1Result").text("输入的两密码不一致");
+                    }
+                }
+            });
+
+            // 验证密码2
+            $("#pwd2").blur(function () {
+                // 获取确认密码框中的密码
+                var pwd1 = $("#pwd1").val();
+                // 判断是否存有值
+                if(pwd1.length != 0 ){
+                    var pwd2 = $(this).val();
+                    // 判断密码是否不一致
+                    if(pwd2 != pwd1){
+                        $("#pwd2Result").text("输入的两密码不一致");
+                    }
+                }
+            });
+
+
+            // 注册
+            $("#reginster").click(function(){
+                // 获取表单中的数据
+                var userName = $("#userName").val();
+                var pwd1 = $("#pwd1").val();
+                var realName = $("#realName").val();
+                var pwd2 = $("#pwd2").val();
+
+                if( userName.length != 0 && pwd1.length != 0 && pwd2.length != 0 && realName.length != 0){
+                    // 判断密码是否相同
+                    if(pwd1 == pwd2){
+                        // 后端验证
+                        $.ajax({
+                            url:"/user/reginster",
+                            data:{"userName":userName,"password":pwd1,"realName":realName},
+                            type:"post",
+                            dataType:"json",
+                            success:function(data){
+                                if(data){
+                                    alert("注册成功");
+                                    location.href = "/user/toLoginPage";
+                                }
+                            }
+                        });
+                    }else{
+                        alert("两次密码输入不一致请重新输入");
+                    }
+                }else{
+                    alert("请按要求输入基本信息");
+                }
+            });
+
+            // 返回上一页
+            $("#back").click(function () {
+                history.back();
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>
+                用户昵称: <input type="text" name="userName" th:id="userName">
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                用户真实姓名: <input type="text" name="realName" th:id="realName">
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                密码： <input type="password" name="password" th:id="pwd1">
+                <span th:id="pwd1Result"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                确定密码： <input type="password" name="password" th:id="pwd2">
+                <span th:id="pwd2Result"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="button"  th:id = "back" th:value="上一页">
+                <input type="button"  th:id = "reginster" th:value="注册">
+            </td>
+        </tr>
+
+    </table>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/css3.css}">
+    <script type="text/javascript" th:src="@{/static/js/jquery-1.8.3.js}"></script>
+    <script type="text/javascript">
+
+        $(function () {
+
+            // 验证密码1
+            $("#pwd1").blur(function () {
+                // 获取确认密码框中的密码
+                var pwd2 = $("#pwd2").val();
+                // 判断是否存有值
+                if(pwd2.length != 0 ){
+                    var pwd1 = $(this).val();
+                    // 判断密码是否不一致
+                    if(pwd2 != pwd1){
+                        $("#pwd1Result").text("输入的两密码不一致");
+                    }
+                }
+            });
+
+            // 验证密码2
+            $("#pwd2").blur(function () {
+                // 获取确认密码框中的密码
+                var pwd1 = $("#pwd1").val();
+                // 判断是否存有值
+                if(pwd1.length != 0 ){
+                    var pwd2 = $(this).val();
+                    // 判断密码是否不一致
+                    if(pwd2 != pwd1){
+                        $("#pwd2Result").text("输入的两密码不一致");
+                    }
+                }
+            });
+
+
+            // 登录
+            $("#login").click(function(){
+                 // 获取表单中的数据
+                 var userName = $("#userName").val();
+                 var pwd1 = $("#pwd1").val();
+                 var pwd2 = $("#pwd2").val();
+
+                 // 判断是否输入了基本信息
+                 if( userName.length != 0 && pwd1.length != 0 && pwd2.length != 0){
+                      // 判断密码是否相同
+                     if(pwd1 == pwd2){
+                         // 后端验证
+                         $.ajax({
+                             url:"/user/login",
+                             data:{"userName":userName,"password":pwd1},
+                             type:"post",
+                             dataType:"json",
+                             success:function(data){
+                                 if(data){
+                                     alert("登录成功");
+                                     location.href = "/boke/findBokesByLikeTitleConming"
+                                 }
+                             }
+                         });
+                     }else{
+                         alert("两次密码输入不一致，请重新输入");
+                     }
+                 }else{
+                     alert("请按要求输入基本信息");
+                 }
+            });
+
+            // 前往注册页面
+            $("#reginster").click(function(){
+                location.href = "/user/toReginsterPage";
+            });
+
+        });
+    </script>
+</head>
+<body>
+<form>
+    <table>
+        <tr>
+            <td>
+                用户昵称: <input type="text" name="userName" th:id="userName">
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                密码： <input type="password" name="password" th:id="pwd1">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                确定密码： <input type="password" name="password" th:id="pwd2">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                 <input type="button"  th:id = "login" th:value="登录">
+                 <input type="button"  th:id = "reginster" th:value="注册">
+            </td>
+        </tr>
+
+    </table>
+</form>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+1.在mybats的开发中namespace有特殊的意思，一定要是对应接口的全限定名
+	通过namespace可以简历mapper.xml和接口之间的关系(名字不重要，位置不重要)
+ -->
+<mapper namespace="com.web.mapper.BokeMapper">
+
+    <!-- 模糊记录数查询 -->
+    <select id="countBokesByLikeTitle" resultType="int" parameterType="string">
+        select count(1) from
+          (select a.*,rownum r from
+           (select b.id id,u.realName realName,b.title title,b.createdate createDate, count(d.bid)  "number"
+           from c_user u
+           join c_boke b on b.userid = u.userid
+           left join c_dz d on d.bid = b.id
+           group by u.realName,b.id,b.title,b.createdate) a
+           ) b
+          where b.title like '%${title}%'
+    </select>
+
+    <!-- 模糊查询 -->
+    <select id="findBokesByLikeTitleConmingt" resultType="com.web.vo.BokeVo" parameterType="com.web.util.PageUtil">
+        select * from
+          (select a.*,rownum r from
+           (select b.id id,u.realName realName,b.title title,b.createdate createDate, count(d.bid) as "number"
+           from c_user u
+           join c_boke b on b.userid = u.userid
+           left join c_dz d on d.bid = b.id
+           group by u.realName,b.id,b.title,b.createdate) a
+           ) b
+          where b.title like '%${mohu}%'
+          and b.r &gt; #{start} and b.r &lt;  #{end}
+    </select>
+
+    <!-- 查询是否点赞 -->
+    <select id="likenum" resultType="com.web.pojo.PL" parameterType="int">
+        select * from c_dz where bid = #{id} and userId = #{userId}
+    </select>
+
+    <!-- 取消点赞 -->
+    <delete id="deleteThisPL" parameterType="int">
+        delete from c_dz where bid = #{id} and userId = #{userId}
+    </delete>
+
+    <!-- 增加点击量 -->
+    <insert id="addThisPL" parameterType="int">
+        insert into c_dz (id,bid,userId) values (seq_c_dz.nextval,#{id},#{userId})
+    </insert>
+
+    <!-- 查询是否为自己的boke -->
+    <select id="findThisBokeByMyslef" resultType="com.web.pojo.Boke" parameterType="int">
+         select b.* from c_boke b
+           join c_user u
+           on u.userid = b.userid
+           where u.userid = #{userId}
+           and b.id = #{id}
+    </select>
+
+    <!-- 删除boke表中的id -->
+    <delete id="deleteThisBoke" parameterType="int">
+        delete from c_boke where id = #{id}
+    </delete>
+
+    <!-- 删除该博客的评论 -->
+    <delete id="deleteThisBokePL" parameterType="int">
+        delete from c_pl where bid = #{id}
+    </delete>
+
+    <!-- 删除该boke的点赞量 -->
+    <delete id="deleteThisBokeDZ" parameterType="int">
+        delete from c_dz where bid = #{id}
+    </delete>
+
+    <!-- 添加boke -->
+    <insert id="sendBoke" parameterType="com.web.pojo.Boke">
+        insert into
+        c_boke
+        (id,title,content,createDate,userId)
+        values
+        (seq_c_boke.nextval,#{title}，#{content},#{createDate},#{userId})
+    </insert>
+
+
+    <!-- 查询该boke的内容 -->
+    <select id="findBokeById" resultType="com.web.vo.BokeVo" parameterType="int">
+        select b.*,userName
+        from c_boke b
+        join c_user u
+        on b.userId = u.userId
+        where b.id = #{id}
+    </select>
+
+    <!-- 查询该博客的所有评论 -->
+    <select id="findThisBokePLs" resultType="com.web.vo.PLVo" parameterType="int">
+         select p.*,realName
+          from c_pl  p
+          join c_user u
+          on u.userid = p.userid
+          where bid = #{id}
+    </select>
+
+    <!-- 添加评论 -->
+    <insert id="sendPL" parameterType="com.web.pojo.PL">
+        insert into c_pl
+         (id,bid,createDate,content,userId)
+         values
+         (seq_c_pl.nextval,#{bid},#{createDate},#{content},#{userId})
+    </insert>
+
+    <!-- 查询与自己有关的评论给 -->
+    <select id="findAllPLsByMyslef" resultType="com.web.vo.PLVo" parameterType="int">
+        select p.*,realName
+          from c_pl  p
+          join c_user u
+          on u.userid = p.userid
+          where p.bid = #{id} and p.userid = #{userId}
+    </select>
+
+
+    <update id="updateThisBoke" parameterType="com.web.pojo.Boke">
+        update c_boke set content = #{content} , title = #{title} where  id = #{id}
+    </update>
+
+
+</mapper>

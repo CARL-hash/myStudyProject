@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>发布boke</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/css3.css}">
+    <script type="text/javascript" th:src="@{/static/js/jquery-1.8.3.js}"></script>
+    <script type="text/javascript">
+        $(function () {
+            var id = [[${id}]];
+
+            $.getJSON(
+                "/boke/findBokeById/"+id,
+                function(data){
+                    $("#title").val(data.title);
+                    $("#content").val(data.content);
+                }
+            )
+        })
+    </script>
+</head>
+<body>
+<form th:method="post" th:action="@{/boke/updateThisBoke}">
+    <table>
+        <tr>
+            <td>
+                题目： <input type="text" name="title" id="title">
+                       <input type="hidden" name="id" th:value="${id}">
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                内容： <textarea rows="5" cols="10" name="content" id="content"></textarea>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <input type="submit" th:value="发布" >
+            </td>
+        </tr>
+
+    </table>
+</form>
+
+</body>
+</html>

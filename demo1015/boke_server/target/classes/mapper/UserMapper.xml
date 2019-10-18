@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+1.在mybats的开发中namespace有特殊的意思，一定要是对应接口的全限定名
+	通过namespace可以简历mapper.xml和接口之间的关系(名字不重要，位置不重要)
+ -->
+<mapper namespace="com.web.mapper.UserMapper">
+
+    <!--
+      Cause: java.sql.SQLSyntaxErrorException: ORA-00911: 无效字符
+      原因是使用mybatis的时候 使用了 在sql中添加了分号；
+
+       账号注册
+    -->
+    <insert id="reginster" parameterType="com.web.pojo.User">
+       insert into c_user values (seq_c_user.nextval,#{userName},#{realName},#{password})
+    </insert>
+
+    <!--
+       登录查询账号是否存在
+    -->
+    <select id="login" parameterType="com.web.pojo.User" resultType="com.web.pojo.User">
+        select * from c_user where username = #{userName} and password = #{password}
+    </select>
+
+
+
+</mapper>

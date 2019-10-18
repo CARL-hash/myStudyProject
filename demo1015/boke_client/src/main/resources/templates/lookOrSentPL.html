@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>测试页面</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/css3.css}">
+    <script type="text/javascript" th:src="@{/static/js/jquery-1.8.3.js}"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var id  = [[${id}]];
+
+            // 获取文章信息
+            $.getJSON(
+                "/boke/findBokeById/"+id,
+                function (data) {
+                 $("#title").text(data.title);
+                 $("#content").text(data.content);
+                 $("#userName").text(data.userName);
+                }
+            );
+
+            // 获取评论信息
+            $.getJSON(
+                "/boke/findThisBokePLs/"+id,
+                function (data) {
+                    for(var i in data){
+                        // 将毫秒值转换为日期
+                        var time = new Date(data[i].createDate);
+                        var day = time.getDate();
+                        // month 的范围是（0-11）
+                        var month = time.getMonth() + 1;
+                        var year = time.getFullYear();
+
+                        time = year + "-" + month + "-" + day;
+
+                        $("#pl").after(
+                            "<tr>" +
+                                "<td>" + data[i].id + "</td>" +
+                                "<td>" + data[i].realName    + "</td>" +
+                                "<td colspan='2'>" + data[i].content + "</td>" +
+                                "<td>" + time + "</td>" +
+                            "</tr>"
+                        )
+                    }
+                }
+            );
+
+            // 查询自己相关的信息
+            $("#findAllPLsByMyslef").click(function () {
+                $.post(
+                    "/boke/findAllPLsByMyslef/"+id,
+                    function(data){
+                        // 清空数据
+                        $("#pl").remove();
+                         // 添加信息
+                        $("#bokeContent").after(
+                            "<tr>" +
+                            "<td>" + 评论序号 + "</td>" +
+                            "<td>" + 评论人 + "</td>" +
+                            "<td colspan='2'>" + 评论内容 + "</td>" +
+                            "<td>" + 评论时间 + "</td>" +
+                            "</tr>"
+                        )
+
+                        for(var i in data){
+                            // 将毫秒值转换为日期
+                            var time = new Date(data[i].createDate);
+                            var day = time.getDate();
+                            // month 的范围是（0-11）
+                            var month = time.getMonth() + 1;
+                            var year = time.getFullYear();
+
+                            time = year + "-" + month + "-" + day;
+
+                            $("#pl").after(
+                                "<tr>" +
+                                "<td>" + data[i].id + "</td>" +
+                                "<td>" + data[i].realName    + "</td>" +
+                                "<td colspan='2'>" + data[i].content + "</td>" +
+                                "<td>" + time + "</td>" +
+                                "</tr>"
+                            )
+                        }
+                    },"json"
+                );
+            });
+
+            // 发布评论
+            $("#sentPL").click(function () {
+                var plContent = $("#plContent").val();
+
+                if(plContent.length != 0){
+                    // 发布评论
+                    $.post(
+                        "/boke/sentPL",
+                        {"content":plContent,"bid":id},
+                        function(data){
+                            if(data){
+                                alert("评论成功");
+                                location.reload();
+                            }
+                        },"json"
+                    );
+                }else{
+                    alert("请输入您的评论");
+                }
+            });
+
+
+        })
+    </script>
+</head>
+<body>
+<table>
+    <tr>
+        <td colspan="3">文章名称： <span><font color="blue" id="title"></font></span></td>
+        <td colspan="2">文章发布者： <span><font color="blue" id="userName"></font></span></td>
+    </tr>
+    <tr id="bokeContent">
+        <td colspan="5">文章内容：
+            <textarea id="content"></textarea>
+        </td>
+    </tr>
+
+    <tr id="pl">
+        <td>评论编号</td>
+        <td>评论人</td>
+        <td>评论内容</td>
+        <td>评论时间</td>
+        <td><button id="findAllPLsByMyslef">查询自己发表的评论</button></td>
+    </tr>
+
+    <tr>
+        <td colspan="4">
+            评论: <textarea id="plContent" rows="10" cols="20"></textarea>
+        </td>
+        <td>
+            <button id="sentPL">发布</button>
+        </td>
+    </tr>
+
+
+</table>
+</body>
+</html>

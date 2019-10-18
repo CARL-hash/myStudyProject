@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>列表</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/css3.css}">
+    <script type="text/javascript" th:src="@{/static/js/jquery-1.8.3.js}"></script>
+    <script type="text/javascript">
+         function go(pageNum){
+             var title = $("#title").val();
+             location.href = "/boke/findBokesByLikeTitleConming?pageNum=" + pageNum + "&title=" + title;
+         }
+
+
+        $(function () {
+
+            // 点赞
+           $(".likenum").click(function (){
+               var id = $(this).val();
+               location.href = "/boke/likenum/" + id;
+           });
+
+            // 删除
+           $(".deleteThis").click(function (){
+               var id = $(this).val();
+               location.href = "/boke/deleteThis/" + id;
+           });
+
+            // 去发布评论
+           $("#toSentBokePage").click(function (){
+               location.href = "/boke/toSentBokePage";
+           });
+
+            // 去发布评论
+           $(".toLookOrSentPLPage").click(function (){
+               var id = $(this).val();
+               location.href = "/boke/toLookOrSentPLPage/" + id;
+           });
+
+            // 去发布评论
+           $(".toUpdatePage").click(function (){
+               var id = $(this).val();
+               location.href = "/boke/toUpateBokePage/" + id;
+           });
+
+
+
+
+            
+        });
+    </script>
+</head>
+<body>
+<table>
+    <tr>
+        <td colspan="4">
+            标题: <input type="text" id="title" th:value="${map.pageUtil.mohu}">
+        </td>
+        <td colspan="2">
+            <button th:onclick="|go(1)|">查询</button>
+        </td>
+        <td colspan="3">
+            <button id="toSentBokePage">发布微博</button>
+        </td>
+    </tr>
+
+    <tr>
+        <td>序号</td>
+        <td>标题</td>
+        <td>发布人</td>
+        <td>发布时间</td>
+        <td>点击量</td>
+        <td colspan="4">操作</td>
+    </tr>
+
+    <tr th:each="bokeVo:${map.bokeVos}">
+        <td th:text="${bokeVo.r}">序号</td>
+        <td th:text="${bokeVo.title}">标题</td>
+        <td th:text="${bokeVo.realName}">发布人</td>
+        <td th:text="${bokeVo.createDate}">发布时间</td>
+        <td th:text="${bokeVo.number}">点击量</td>
+        <td colspan="4">
+            <button th:value="${bokeVo.id}" th:class="likenum">点赞</button>
+            <button th:value="${bokeVo.id}" th:class="deleteThis">删除</button>
+            <button th:value="${bokeVo.id}" th:class="toUpdatePage">修改</button>
+            <button th:value="${bokeVo.id}" th:class="toLookOrSentPLPage">评论</button>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="9">
+            <button th:onclick="|go(1)|">首页</button>
+            <button th:onclick="|go(${map.pageUtil.pagefirst})|">上一页</button>
+            <button th:onclick="|go(${map.pageUtil.pagelast})|">下一页</button>
+            <button th:onclick="|go(${map.pageUtil.pagewy})|">末页</button>
+        </td>
+    </tr>
+
+</table>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>测试2</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/css3.css}">
+    <script type="text/javascript" th:src="@{/static/js/jquery-1.8.3.js}"></script>
+    <script type="text/javascript">
+
+        // 测试 thymeleaf模型中的值赋值
+        // textarea等双标签使用 需要使用  th:text
+        // input等单标签使用th:value
+        $(function () {
+
+        })
+    </script>
+</head>
+<body>
+<tr>
+    <td>
+        <textarea th:text="${content}"></textarea>
+    </td>
+</tr>
+</body>
+</html>
