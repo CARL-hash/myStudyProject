@@ -1,0 +1,15 @@
+# 项目相关设置 端口名称
+##########################################################
+server:
+  port: 8081
+spring:
+  application:
+    name: sparrow-user-consumer
+  dubbo:
+    registry: zookeeper://192.168.25.128:2181  # 本服务对外暴露的端口号
+    scan: com.sparrow.user.controller   # 服务实现类所在的路径
+    server: true  #开启服务
+  security:
+    user:
+      name: user
+      password: 123

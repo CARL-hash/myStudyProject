@@ -1,0 +1,59 @@
+# 项目相关设置 端口名称
+##########################################################
+server:
+  port: 9001
+
+# mysql数据库连接基本四项 和 数据库连接池
+##########################################################
+spring:
+  datasource:
+    druid:
+      filters: stat
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/p2p?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC&allowMultiQueries=true
+      username: root
+      password: 520
+      initial-size: 1
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: false
+      max-pool-prepared-statement-per-connection-size: 20
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/p2p?useUnicode=true&characterEncoding=utf-8&useSSL=true
+    username: root
+    password: 520
+  application: #项目名称
+    name: sparrow-user-service
+  dubbo:
+    registry: zookeeper://192.168.25.128:2181
+    # 本服务对外暴露的端口号
+    protocol:
+      port: 20881
+  # 服务实现类所在的路径
+    scan: com.sparrow.user.service.impl
+  #开启服务
+    server: true
+# mybatis 配置
+#############################################################################
+mybatis:
+  mapper-locations: classpath:/static/mapper/*Mapper.xml
+  type-aliases-package: com.sparrow.pojo
+
+# pagehelper 配置
+#############################################################################
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count==countSql
+
+# dubbo 配置
+#############################################################################
+

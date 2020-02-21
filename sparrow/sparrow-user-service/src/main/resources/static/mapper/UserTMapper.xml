@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sparrow.user.mapper.UserTMapper" >
+    
+    <resultMap id="userTMap" type="com.sparrow.pojo.UserT">
+        <id column="" property="id" jdbcType="INTEGER"></id>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"></result>
+        <result column="password" property="password" jdbcType="VARCHAR"></result>
+        <result column="age" property="age" jdbcType="INTEGER"></result>
+    </resultMap>
+
+
+    <!-- 查询所有的用户信息 -->
+    <select id="findAll" resultMap="userTMap">
+       select * from user_t
+    </select>
+
+
+</mapper>
